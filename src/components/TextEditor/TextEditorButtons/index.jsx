@@ -30,7 +30,7 @@ export const TextEditorButtons = ({ text }) => {
     const parsedCode = splitCode(text).join("");
     return Array.from(
       { length: 256 },
-      (_, i) => parsedCode.slice(i * 2, i * 2 + 2) || "-"
+      (_, i) => parsedCode.slice(i * 2, i * 2 + 2).toUpperCase() || "-"
     );
   };
 
@@ -60,6 +60,7 @@ export const TextEditorButtons = ({ text }) => {
     }
     return true;
   };
+
 
   const simulateProgram = (program, memory) => {
     dispatch(setIsSimulating(!isSimulating));
@@ -129,9 +130,26 @@ export const TextEditorButtons = ({ text }) => {
 
   const setLastLine = () => {
     let oldState = applicationState;
-    while (!oldState.execute.endProgram) {
+    while (
+      !oldState.execute.endProgram &&
+      !oldState.execute.showOutputPort &&
+      !oldState.execute.showInputPort
+    ) {
       const newState = program.getNewState(oldState);
       oldState = newState;
+
+      if (oldState.execute.jumpInstruction) {
+        const newStateBranch = program.makeJumpBranch(
+          oldState,
+          oldState.execute.jumpInstruction
+        );
+        const nextState = program.getNewState(newStateBranch);
+        oldState = nextState;
+        dispatch(updatePreviousState());
+        dispatch(updateCurrentState(nextState));
+        continue;
+      }
+
       dispatch(updatePreviousState());
       dispatch(updateCurrentState(newState));
     }
