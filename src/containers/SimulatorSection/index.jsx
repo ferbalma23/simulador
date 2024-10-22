@@ -13,9 +13,9 @@ import { AluModal } from "../../components/AluModal";
 import { ControlUnitModal } from "../../components/ControlUnitModal";
 import MainMemoryModal from "../../components/MainMemoryModal";
 import { InstructionsModal } from "../../components/InstructionsModal";
+import { Tutorial } from "../../components/Tutorial";
 
 export const SimulatorContainer = () => {
-  const [colorMode, setColorMode] = useState("dark");
   const nodes = useSelector((state) => state.application.nodes);
   const edges = useSelector((state) => state.application.edges);
   const proOptions = { hideAttribution: true };
@@ -24,6 +24,7 @@ export const SimulatorContainer = () => {
   return (
     <Container>
       <ReactFlow
+        id="simulatorContainer"
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
@@ -40,7 +41,6 @@ export const SimulatorContainer = () => {
         zoomOnDoubleClick={false}
         fitView
         minZoom={0.4}
-        colorMode={colorMode}
       >
         <Controls showInteractive={false} />
         <Background gap={20} />
@@ -49,6 +49,7 @@ export const SimulatorContainer = () => {
       <ControlUnitModal />
       <MainMemoryModal />
       <InstructionsModal />
+      <Tutorial />
     </Container>
   );
 };
